@@ -1,0 +1,70 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
+let pastes = {};
+let apiKeys = {};
+
+app.post('/paste', (req, res) => {
+    const { content, customUrl } = req.body;
+    if (customUrl && pastes[customUrl]) {
+        return res.status(400).send('Custom URL already exists');
+    }
+    const url = customUrl || `paste-${### Backend Implementation Continued
+Here's how to complete the backend implementation for handling paste creation and API key generation using Node.js and Express:
+
+#### Server Setup (`server.js`)
+```javascript
+const express = require('express');
+const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
+let pastes = {};
+let apiKeys = {};
+
+app.post('/paste', (req, res) => {
+    const { content, customUrl } = req.body;
+    const url = customUrl || `paste-${uuidv4()}`;
+    
+    if (customUrl && pastes[customUrl]) {
+        return res.status(400).send('Custom URL already exists');
+    }
+    
+    pastes[url] = content;
+    res.json({ redirectUrl: `/p/${url}` });
+});
+
+app.post('/api/admin/apikeys/generate', (req, res) => {
+    const apiKey = uuidv4();
+    
+    if (apiKeys[req.ip]) {
+        return res.status(400).send('API Key already generated for this IP');
+    }
+
+    apiKeys[req.ip] = apiKey;
+    res.json({ apiKey });
+});
+
+app.get('/p/:url', (req, res) => {
+    const url = req.params.url;
+    const content = pastes[url];
+    
+    if (content) {
+        res.send(`<pre>${content}</pre>`);
+    } else {
+        res.status(404).send('Paste not found');
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}/`);
+});
